@@ -1,6 +1,5 @@
 use rodio;
 use std::io;
-use std::io::Write;
 use std::fs;
 use rand::thread_rng;
 use rand::seq::SliceRandom;
@@ -9,7 +8,7 @@ fn main(){
     let mut dir_name = String::new();
     let pattern = std::env::args().nth(1);
     match pattern{
-        Some(x) => dir_name = String::from("Music")+&x,
+        Some(x) => dir_name = String::from("Music/")+&x,
         None => dir_name = String::from("Music")
     }
 
@@ -20,7 +19,10 @@ fn main(){
 
     for entry in fs::read_dir(dir_name.as_str()).unwrap() {
         let dir = entry.unwrap();
-        paths.push(dir.path())
+
+        if !dir.metadata().unwrap().is_dir(){
+            paths.push(dir.path())
+        }
     }
     //Shuffles paths
     paths.shuffle(&mut thread_rng());
